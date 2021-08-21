@@ -38,7 +38,7 @@ public class EventControllerTests {
                 .name("Spring").description("REST API Development").beginEnrollmentDateTime(LocalDateTime.of(2020, 11, 10, 14, 21))
                 .closeEnrollmentDateTime(LocalDateTime.of(2021, 11, 11, 11, 11))
                 .beginEventDateTime(LocalDateTime.of(2020,11,11,11,11))
-                .endEventDateTime(LocalDateTime.of(2020, 12,11,11,11))
+                .endEventDateTime(LocalDateTime.of(2022, 12,11,11,11))
                 .basePrice(100)
                 .maxPrice(200)
                 .limitOfEnrollment(100)
@@ -54,8 +54,8 @@ public class EventControllerTests {
                 .andExpect(jsonPath("id").exists())
                 .andExpect(header().exists("Location"))
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
-                .andExpect(jsonPath("id").value(Matchers.not(100)))
-                .andExpect(jsonPath("free").value(Matchers.not(true)))
+                .andExpect(jsonPath("free").value(false))
+                .andExpect(jsonPath("offline").value(true))
                 .andExpect(jsonPath("eventStatus").value(EventStatus.DRAFT.name()));
     }
 
