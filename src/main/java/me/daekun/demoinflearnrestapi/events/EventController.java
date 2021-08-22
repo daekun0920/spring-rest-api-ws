@@ -3,6 +3,7 @@ package me.daekun.demoinflearnrestapi.events;
 import org.modelmapper.ModelMapper;
 
 import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.server.LinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
@@ -44,8 +45,12 @@ public class EventController {
         Event event = modelMapper.map(eventDto, Event.class);
         event.update();
         Event newEvent = this.eventRepository.save(event);
-        URI createdUri = linkTo(EventController.class).slash(newEvent.getId()).toUri();
-        return ResponseEntity.created(createdUri).body(event);
+        LinkBuilder selftLinkBuilder = linkTo(EventController.class).slash(newEvent.getId());
+        URI createdUri = selftLinkBuilder.toUri();
+        EventResource eventResource = new EventResource(event);
+        eventResource.add(linkTo(EventController.class).withRel("query-events"));
+        eventResource.add(selftLinkBuilder.withRel("update-event"));
+        return ResponseEntity.created(createdUri).body(eventResource);
     }
 
 }
