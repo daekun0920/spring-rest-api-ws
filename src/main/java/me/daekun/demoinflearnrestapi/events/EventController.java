@@ -1,5 +1,6 @@
 package me.daekun.demoinflearnrestapi.events;
 
+import me.daekun.demoinflearnrestapi.common.ErrorsResource;
 import org.modelmapper.ModelMapper;
 
 import org.springframework.hateoas.Link;
@@ -35,12 +36,13 @@ public class EventController {
     @PostMapping
     public ResponseEntity createEvent(@RequestBody @Valid EventDto eventDto, Errors errors) {
         if (errors.hasErrors()) {
-            return ResponseEntity.badRequest().body(errors);
+            return getErrorsResourceResponseEntity(errors);
         }
 
         eventValidator.validate(eventDto, errors);
+
         if (errors.hasErrors()) {
-            return ResponseEntity.badRequest().body(errors);
+            return getErrorsResourceResponseEntity(errors);
         }
 
         Event event = modelMapper.map(eventDto, Event.class);
@@ -53,6 +55,10 @@ public class EventController {
         eventResource.add(selftLinkBuilder.withRel("update-event"));
         eventResource.add(new Link("/docs/index.html#resources-events-create").withRel("profile"));
         return ResponseEntity.created(createdUri).body(eventResource);
+    }
+
+    private ResponseEntity getErrorsResourceResponseEntity(Errors errors) {
+        return ResponseEntity.badRequest().body(ErrorsResource.modelOf(errors));
     }
 
 }
