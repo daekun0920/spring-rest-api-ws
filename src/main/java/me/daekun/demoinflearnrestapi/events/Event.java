@@ -1,6 +1,7 @@
 package me.daekun.demoinflearnrestapi.events;
 
 import lombok.*;
+import me.daekun.demoinflearnrestapi.accounts.Account;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -26,8 +27,11 @@ public class Event {
     private boolean offline;
     private boolean free;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING) // String: Enum 이름을 DB에 저장
     private EventStatus eventStatus = EventStatus.DRAFT;
+
+    @ManyToOne
+    private Account manager;
 
     public void update() {
         // Update Free
