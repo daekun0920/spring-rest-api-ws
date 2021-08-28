@@ -1,5 +1,7 @@
 package me.daekun.demoinflearnrestapi.events;
 
+import me.daekun.demoinflearnrestapi.accounts.Account;
+import me.daekun.demoinflearnrestapi.accounts.AccountRole;
 import me.daekun.demoinflearnrestapi.common.ErrorsResource;
 import org.apache.coyote.Response;
 import org.modelmapper.ModelMapper;
@@ -98,6 +100,7 @@ public class EventController {
         if (errors.hasErrors()) {
             return getErrorsResourceResponseEntity(errors);
         }
+        Account acc = new Account();
 
         Event existingEvent = optionalEvent.get();
         this.modelMapper.map(eventDto, existingEvent);
