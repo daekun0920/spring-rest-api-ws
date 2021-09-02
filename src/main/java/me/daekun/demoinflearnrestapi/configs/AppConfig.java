@@ -1,8 +1,10 @@
 package me.daekun.demoinflearnrestapi.configs;
 
 import me.daekun.demoinflearnrestapi.accounts.Account;
+import me.daekun.demoinflearnrestapi.accounts.AccountRepository;
 import me.daekun.demoinflearnrestapi.accounts.AccountRole;
 import me.daekun.demoinflearnrestapi.accounts.AccountService;
+import me.daekun.demoinflearnrestapi.common.AppProperties;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -32,12 +34,22 @@ public class AppConfig {
             @Autowired
             AccountService accountService;
 
+            @Autowired
+            AppProperties appProperties;
+
             @Override
             public void run(ApplicationArguments args) throws Exception {
-                Account daekun = Account.builder()
-                        .email("daekun@email.com")
-                        .password("daekun")
+                Account admin = Account.builder()
+                        .email(appProperties.getAdminUsername())
+                        .password(appProperties.getAdminPassword())
                         .roles(Set.of(AccountRole.ADMIN, AccountRole.USER))
+                        .build();
+                accountService.saveAccount(admin);
+
+                Account daekun = Account.builder()
+                        .email(appProperties.getUserUsername())
+                        .password(appProperties.getUserPassword())
+                        .roles(Set.of(AccountRole.USER))
                         .build();
                 accountService.saveAccount(daekun);
             }

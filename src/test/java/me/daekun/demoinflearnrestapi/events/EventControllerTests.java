@@ -4,6 +4,7 @@ import me.daekun.demoinflearnrestapi.accounts.Account;
 import me.daekun.demoinflearnrestapi.accounts.AccountRepository;
 import me.daekun.demoinflearnrestapi.accounts.AccountRole;
 import me.daekun.demoinflearnrestapi.accounts.AccountService;
+import me.daekun.demoinflearnrestapi.common.AppProperties;
 import me.daekun.demoinflearnrestapi.common.BaseControllerTest;
 import me.daekun.demoinflearnrestapi.common.TestDescription;
 import org.junit.Before;
@@ -41,6 +42,9 @@ public class EventControllerTests extends BaseControllerTest {
 
     @Autowired
     AccountRepository accountRepository;
+
+    @Autowired
+    AppProperties appProperties;
 
     @Before
     public void setUp() {
@@ -131,8 +135,8 @@ public class EventControllerTests extends BaseControllerTest {
 
     private String getAccessToken() throws Exception {
         // Given
-        String username = "daekun@gmail.com";
-        String password = "daekun";
+        String username = appProperties.getUserUsername();
+        String password = appProperties.getUserPassword();
 
         Account daekun = Account.builder()
                 .email(username)
@@ -142,13 +146,10 @@ public class EventControllerTests extends BaseControllerTest {
 
         this.accountService.saveAccount(daekun);
 
-        String clientId = "myApp";
-        String clientSecret = "pass";
-
         ResultActions perform = this.mockMvc.perform(post("/oauth/token")
-                .with(httpBasic(clientId, clientSecret))
-                .param("username", username)
-                .param("password", password)
+                .with(httpBasic(appProperties.getClientId(), appProperties.getClientSecret()))
+                .param("username", appProperties.getUserUsername())
+                .param("password", appProperties.getUserPassword())
                 .param("grant_type", "password"));
 
         var responseBody = perform.andReturn().getResponse().getContentAsString();
