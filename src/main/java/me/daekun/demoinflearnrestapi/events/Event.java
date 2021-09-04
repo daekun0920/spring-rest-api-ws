@@ -1,7 +1,9 @@
 package me.daekun.demoinflearnrestapi.events;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 import me.daekun.demoinflearnrestapi.accounts.Account;
+import me.daekun.demoinflearnrestapi.accounts.AccountSerializer;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -26,11 +28,10 @@ public class Event {
     private int limitOfEnrollment;
     private boolean offline;
     private boolean free;
-
     @Enumerated(EnumType.STRING) // String: Enum 이름을 DB에 저장
     private EventStatus eventStatus = EventStatus.DRAFT;
-
     @ManyToOne
+    @JsonSerialize(using = AccountSerializer.class)
     private Account manager;
 
     public void update() {
